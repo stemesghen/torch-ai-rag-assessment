@@ -66,6 +66,29 @@ the two rankings without requiring their incompatible raw scores to be
 normalized. A CrossEncoder then performs a more expensive second-stage
 relevance comparison on the smaller fused candidate set.
 
+## Document Ingestion
+
+Before running the RAG application for the first time, ingest the source document:
+
+```bash
+python -m src.ingest
+```
+
+The ingestion pipeline:
+
+1. Processes and chunks the source document using Docling.
+2. Caches the processed chunks as JSON so the document does not need to be reparsed on every run.
+3. Generates dense embeddings for the chunks and caches them as a NumPy (`.npy`) file.
+4. Creates the Elasticsearch index if needed.
+5. Stores the chunk text and embeddings in Elasticsearch for retrieval.
+
+After ingestion is complete, run the application:
+
+```bash
+python -m src.main
+```
+
+The ingestion step only needs to be rerun when the source document changes, the cached chunks or embeddings are invalidated, or the Elasticsearch index is recreated.
 
 ## Quick Start with Docker
 
