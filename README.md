@@ -69,8 +69,6 @@ relevance comparison on the smaller fused candidate set.
 
 ## Quick Start with Docker
 
-The recommended way to run the prototype is with Docker Compose. This starts the application and its Elasticsearch dependency in a reproducible environment.
-
 ### 1. Configure environment variables
 
 Create a `.env` file in the project root using `.env.example` as a reference.
