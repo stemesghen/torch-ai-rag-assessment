@@ -1,0 +1,17 @@
+[
+  {
+    "query_id": "neg001",
+    "query": "Who won the 2026 World Cup?",
+    "expected_behavior": "insufficient_context"
+  },
+  {
+    "query_id": "neg002",
+    "query": "What exact climate adaptation budget did France approve in 2025?",
+    "expected_behavior": "insufficient_context"
+  },
+  {
+    "query_id": "neg003",
+    "query": "Why does the report say global warming stopped in 2010?",
+    "expected_behavior": "reject_unsupported_premise"
+  }
+]

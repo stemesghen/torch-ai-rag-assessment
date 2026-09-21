@@ -1,0 +1,127 @@
+[
+    {
+        "input": "How is global warming expected to change in the near term from 2021 to 2040?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "By how much can demand-side measures reduce global greenhouse gas emissions in end-use sectors by 2050?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What proportion of Earth's land, freshwater and ocean areas needs effective and equitable conservation to maintain biodiversity and ecosystem resilience?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "Why does adoption of low-emission technologies lag in many developing countries?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How have the costs and deployment of solar energy, wind energy and electric vehicles changed from 2010 to 2019?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What challenges and trade-offs can accompany technological innovation for climate action?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How can natural variability affect human-caused climate change in the near term?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8
+    },
+    {
+        "input": "What level of global warming by 2100 is associated with pathways consistent with NDCs announced before COP26 if ambition does not increase after 2030?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How much higher was mortality from floods, droughts and storms in highly vulnerable regions between 2010 and 2020?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What mitigation options does the IPCC identify as technically viable and increasingly cost effective?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What evidence does the report give that greenhouse gas emissions are unequally distributed across populations?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How much higher was global surface temperature in 2011-2020 compared with 1850-1900?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What health impacts have resulted from increases in extreme heat events?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What factors contributed to the change in global surface temperature from 1850-1900 to 2010-2019?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What happens to adaptation limits and losses and damages at 1.5\u00b0C of global warming and as warming increases?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How can regulatory, economic and consumption-based approaches advance equity while reducing emissions?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What adaptation options can help protect human health and well-being from climate change?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What are the benefits and limitations of carbon pricing and fossil fuel subsidy removal?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How can equity and inclusive participation improve climate adaptation and mitigation outcomes?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How can international cooperation support climate-resilient development?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What role does finance play in accelerating climate adaptation and mitigation?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What warming levels are projected for 2081-2100 under very low, intermediate and very high greenhouse gas emissions scenarios?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "How has the rate of global mean sea level rise changed since 1901?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What climate changes are projected to become more frequent or widespread with further warming?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    },
+    {
+        "input": "What are the main barriers to climate change adaptation?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0
+    }
+]

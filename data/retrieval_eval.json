@@ -1,0 +1,264 @@
+{
+  "dataset_name": "ipcc_ar6_spm_rag_eval_v1",
+  "source_document": "final_data.pdf",
+  "corpus_file": "all_chunks.json",
+  "corpus_size": 175,
+  "relevance_scale": {
+    "3": "directly answers the query",
+    "2": "strong supporting evidence",
+    "1": "partially relevant",
+    "0": "irrelevant; omitted from relevance maps"
+  },
+  "notes": "Human-review seed benchmark constructed from the fixed retrievable chunk corpus. Questions and reference answers are source-grounded. Relevance judgments are explicit annotations and should be frozen before comparing retrieval configurations.",
+  "samples": [
+    {
+      "query_id": "q001",
+      "query": "How much higher was global surface temperature in 2011-2020 compared with 1850-1900?",
+      "relevance": {
+        "22": 3,
+        "21": 2
+      },
+      "reference_answer": "Global surface temperature was 1.09°C higher in 2011-2020 than in 1850-1900; the report's rounded headline estimate is 1.1°C.",
+      "question_type": "factoid_numeric"
+    },
+    {
+      "query_id": "q002",
+      "query": "What factors contributed to the change in global surface temperature from 1850-1900 to 2010-2019?",
+      "relevance": {
+        "23": 3,
+        "26": 2
+      },
+      "reference_answer": "Well-mixed greenhouse gases contributed 1.0°C to 2.0°C of warming, while other human drivers, principally aerosols, contributed 0.0°C to 0.8°C of cooling. Natural drivers and internal variability had smaller effects.",
+      "question_type": "causal_quantitative"
+    },
+    {
+      "query_id": "q003",
+      "query": "What health impacts have resulted from increases in extreme heat events?",
+      "relevance": {
+        "35": 3,
+        "36": 1
+      },
+      "reference_answer": "Extreme heat events have resulted in human mortality and morbidity. Climate-related food-borne, water-borne and vector-borne diseases have increased, and some mental health challenges are associated with increasing temperatures and extreme events.",
+      "question_type": "factoid_list"
+    },
+    {
+      "query_id": "q004",
+      "query": "What mitigation options does the IPCC identify as technically viable and increasingly cost effective?",
+      "relevance": {
+        "55": 3,
+        "56": 2
+      },
+      "reference_answer": "Options include solar and wind energy, electrification of urban systems, urban green infrastructure, energy efficiency, demand-side management, improved forest and crop or grassland management, and reduced food waste and loss.",
+      "question_type": "list"
+    },
+    {
+      "query_id": "q005",
+      "query": "What level of global warming by 2100 is associated with pathways consistent with NDCs announced before COP26 if ambition does not increase after 2030?",
+      "relevance": {
+        "57": 3,
+        "53": 1
+      },
+      "reference_answer": "Those pathways lead to median global warming of 2.8°C by 2100, with an assessed range of 2.1°C to 3.4°C.",
+      "question_type": "scenario_numeric"
+    },
+    {
+      "query_id": "q006",
+      "query": "Why does adoption of low-emission technologies lag in many developing countries?",
+      "relevance": {
+        "59": 3,
+        "173": 3
+      },
+      "reference_answer": "Adoption lags partly because of limited finance, technology development and transfer, capacity or capacity building, and weaker enabling conditions.",
+      "question_type": "causal_multi_context"
+    },
+    {
+      "query_id": "q007",
+      "query": "How is global warming expected to change in the near term from 2021 to 2040?",
+      "relevance": {
+        "62": 3,
+        "61": 2
+      },
+      "reference_answer": "Global warming is expected to continue increasing in the near term, mainly because of increased cumulative CO2 emissions. It is more likely than not to reach 1.5°C even under the very low emissions scenario.",
+      "question_type": "projection"
+    },
+    {
+      "query_id": "q008",
+      "query": "How can natural variability affect human-caused climate change in the near term?",
+      "relevance": {
+        "70": 3,
+        "68": 2,
+        "65": 1
+      },
+      "reference_answer": "Natural variability can temporarily attenuate or amplify human-caused climate changes. A large explosive volcanic eruption, for example, could temporarily and partially mask human-caused climate change for one to three years.",
+      "question_type": "mechanism"
+    },
+    {
+      "query_id": "q009",
+      "query": "What happens to adaptation limits and losses and damages at 1.5°C of global warming and as warming increases?",
+      "relevance": {
+        "129": 3
+      },
+      "reference_answer": "Some human and natural systems face limits to adaptation and adaptive capacity at 1.5°C of warming, and losses and damages increase with every additional increment of warming.",
+      "question_type": "conceptual"
+    },
+    {
+      "query_id": "q010",
+      "query": "By how much can demand-side measures reduce global greenhouse gas emissions in end-use sectors by 2050?",
+      "relevance": {
+        "139": 3
+      },
+      "reference_answer": "Demand-side measures and new ways of providing end-use services can reduce global greenhouse gas emissions in buildings, land transport and food by 40% to 70% by 2050 compared with baseline scenarios.",
+      "question_type": "factoid_numeric"
+    },
+    {
+      "query_id": "q011",
+      "query": "What proportion of Earth's land, freshwater and ocean areas needs effective and equitable conservation to maintain biodiversity and ecosystem resilience?",
+      "relevance": {
+        "151": 3
+      },
+      "reference_answer": "Effective and equitable conservation of approximately 30% to 50% of Earth's land, freshwater and ocean areas is identified.",
+      "question_type": "factoid_numeric"
+    },
+    {
+      "query_id": "q012",
+      "query": "What adaptation options can help protect human health and well-being from climate change?",
+      "relevance": {
+        "154": 3
+      },
+      "reference_answer": "Options include stronger public-health programs for climate-sensitive diseases, more resilient health systems, improved ecosystem health and potable-water access, reduced flood exposure for water and sanitation systems, better surveillance and early warning, vaccine development, improved mental-health access, and Heat Health Action Plans.",
+      "question_type": "list"
+    },
+    {
+      "query_id": "q013",
+      "query": "How can regulatory, economic and consumption-based approaches advance equity while reducing emissions?",
+      "relevance": {
+        "163": 3,
+        "166": 2
+      },
+      "reference_answer": "They can support reductions in emission-intensive consumption while improving well-being, support behavioral and lifestyle changes through policy, infrastructure and technology, and use technology transfer, capacity building and finance to help developing regions transition to low-emissions systems.",
+      "question_type": "conceptual_multi_context"
+    },
+    {
+      "query_id": "q014",
+      "query": "What challenges and trade-offs can accompany technological innovation for climate action?",
+      "relevance": {
+        "173": 3
+      },
+      "reference_answer": "Technological innovation can create environmental impacts, social inequalities, dependence on foreign knowledge and providers, distributional impacts and rebound effects, requiring appropriate governance and policies.",
+      "question_type": "list"
+    },
+    {
+      "query_id": "q015",
+      "query": "What are the main barriers to climate change adaptation?",
+      "relevance": {
+        "44": 3,
+        "40": 2,
+        "42": 2
+      },
+      "reference_answer": "Key barriers include limited resources, lack of private-sector and citizen engagement, insufficient finance, low climate literacy, lack of political commitment, limited research or slow uptake of adaptation science, and a low sense of urgency. Financial, governance, institutional and policy constraints also contribute to adaptation gaps and limits.",
+      "question_type": "causal_multi_context"
+    },
+    {
+      "query_id": "q016",
+      "query": "How has the rate of global mean sea level rise changed since 1901?",
+      "relevance": {
+        "31": 3
+      },
+      "reference_answer": "The average rate increased from 1.3 mm per year during 1901-1971 to 1.9 mm per year during 1971-2006 and 3.7 mm per year during 2006-2018.",
+      "question_type": "trend_numeric"
+    },
+    {
+      "query_id": "q017",
+      "query": "How much higher was mortality from floods, droughts and storms in highly vulnerable regions between 2010 and 2020?",
+      "relevance": {
+        "32": 3
+      },
+      "reference_answer": "Mortality from floods, droughts and storms was 15 times higher in highly vulnerable regions than in regions with very low vulnerability.",
+      "question_type": "factoid_numeric"
+    },
+    {
+      "query_id": "q018",
+      "query": "What evidence does the report give that greenhouse gas emissions are unequally distributed across populations?",
+      "relevance": {
+        "29": 3
+      },
+      "reference_answer": "The report states that the highest-emitting 10% of households contribute 34-45% of global consumption-based household greenhouse gas emissions, while the bottom 50% contribute 13-15%; it also reports large differences in per-capita emissions across countries.",
+      "question_type": "comparison_numeric"
+    },
+    {
+      "query_id": "q019",
+      "query": "How have the costs and deployment of solar energy, wind energy and electric vehicles changed from 2010 to 2019?",
+      "relevance": {
+        "56": 3,
+        "55": 1
+      },
+      "reference_answer": "Unit costs fell by about 85% for solar energy, 55% for wind energy and 85% for lithium-ion batteries. Deployment increased by more than tenfold for solar and more than one hundredfold for electric vehicles, with substantial regional variation.",
+      "question_type": "trend_numeric"
+    },
+    {
+      "query_id": "q020",
+      "query": "What warming levels are projected for 2081-2100 under very low, intermediate and very high greenhouse gas emissions scenarios?",
+      "relevance": {
+        "63": 3,
+        "67": 2
+      },
+      "reference_answer": "Best-estimate warming for 2081-2100 is 1.4°C under SSP1-1.9, 2.7°C under SSP2-4.5 and 4.4°C under SSP5-8.5.",
+      "question_type": "comparison_numeric"
+    },
+    {
+      "query_id": "q021",
+      "query": "What climate changes are projected to become more frequent or widespread with further warming?",
+      "relevance": {
+        "69": 3,
+        "64": 2,
+        "68": 2
+      },
+      "reference_answer": "Projected changes include more frequent compound heatwaves and droughts, more widespread extreme sea-level events, intensification of parts of the water cycle and some storms, increased aridity and fire weather, sea-level rise, ocean acidification and deoxygenation, and reductions in cryospheric elements.",
+      "question_type": "synthesis_multi_context"
+    },
+    {
+      "query_id": "q022",
+      "query": "How can equity and inclusive participation improve climate adaptation and mitigation outcomes?",
+      "relevance": {
+        "161": 3,
+        "162": 3,
+        "160": 2,
+        "165": 2
+      },
+      "reference_answer": "Prioritising equity, social and climate justice, rights-based approaches and meaningful participation can reduce trade-offs, build social trust, support transformative change and improve adaptation outcomes, especially for vulnerable groups.",
+      "question_type": "synthesis_multi_context"
+    },
+    {
+      "query_id": "q023",
+      "query": "What role does finance play in accelerating climate adaptation and mitigation?",
+      "relevance": {
+        "168": 3,
+        "169": 3,
+        "171": 2,
+        "170": 2
+      },
+      "reference_answer": "Greater and more equitable access to finance can accelerate mitigation and adaptation, build capacity and address adaptation limits. Public finance can enable action and leverage private finance, while current flows remain below estimated needs, particularly in developing countries.",
+      "question_type": "synthesis_multi_context"
+    },
+    {
+      "query_id": "q024",
+      "query": "What are the benefits and limitations of carbon pricing and fossil fuel subsidy removal?",
+      "relevance": {
+        "166": 3,
+        "167": 3
+      },
+      "reference_answer": "Carbon pricing has incentivized low-cost emissions reductions but has been less effective on its own at prevailing prices for higher-cost measures. Fossil fuel subsidy removal can reduce emissions and improve fiscal and sustainability outcomes, but can create adverse distributional impacts that may require compensating measures.",
+      "question_type": "comparison_multi_context"
+    },
+    {
+      "query_id": "q025",
+      "query": "How can international cooperation support climate-resilient development?",
+      "relevance": {
+        "174": 3,
+        "168": 2
+      },
+      "reference_answer": "International cooperation can mobilize and improve access to finance, technology and capacity building, support NDCs, accelerate technology development and deployment, and help shift development pathways toward sustainability.",
+      "question_type": "synthesis"
+    }
+  ]
+}

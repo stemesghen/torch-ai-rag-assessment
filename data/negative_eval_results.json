@@ -1,0 +1,41 @@
+[
+  {
+    "query_id": "neg001",
+    "query": "Who won the 2026 World Cup?",
+    "expected_behavior": "insufficient_context",
+    "actual_answer": "The available context does not contain information to answer who won the 2026 World Cup.",
+    "retrieved_chunk_ids": [
+      9,
+      8,
+      10
+    ],
+    "cited_chunk_ids": [],
+    "model_used": "gemini-3.7-flash"
+  },
+  {
+    "query_id": "neg002",
+    "query": "What exact climate adaptation budget did France approve in 2025?",
+    "expected_behavior": "insufficient_context",
+    "actual_answer": "The available context does not contain information about any climate adaptation budget approved by France in 2025.",
+    "retrieved_chunk_ids": [
+      169,
+      104,
+      125
+    ],
+    "cited_chunk_ids": [],
+    "model_used": "gemini-3.7-flash"
+  },
+  {
+    "query_id": "neg003",
+    "query": "Why does the report say global warming stopped in 2010?",
+    "expected_behavior": "reject_unsupported_premise",
+    "actual_answer": "The provided context does not state that global warming stopped in 2010, nor does it contain information explaining why it would have stopped. Instead, it discusses warming continuing through the 2010\u20132019 period.",
+    "retrieved_chunk_ids": [
+      26,
+      23,
+      65
+    ],
+    "cited_chunk_ids": [],
+    "model_used": "gemini-3.7-flash"
+  }
+]

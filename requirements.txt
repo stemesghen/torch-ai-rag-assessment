@@ -1,0 +1,22 @@
+# Document processing and chunking
+docling
+docling-core[chunking]
+easyocr==1.7.2
+
+# Embeddings and reranking
+sentence-transformers==6.1.0
+
+# Vector / lexical search
+elasticsearch==9.5.1
+
+# LLM
+google-genai==2.24.0
+
+# Data validation / structured output
+pydantic==2.13.5
+
+# Environment variables
+python-dotenv==1.2.3
+
+# Retrieval evaluation
+ranx==0.3.21
