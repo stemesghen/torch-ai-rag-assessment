@@ -256,164 +256,64 @@ pipeline does not depend on notebook state.
 
 ## 1. Document Processing
 
-The ingestion pipeline begins by parsing the source PDF with Docling:
+The source PDF is parsed with **Docling** and chunked using `HybridChunker`.
 
-``` text
+```text
 PDF → Docling → structured document → HybridChunker → chunks
 ```
 
-### Why Docling?
+### Why Docling and HybridChunker?
 
-Technical PDFs can contain headings, sections, tables, layout
-information, and other structural signals. I wanted to avoid
-unnecessarily flattening the document before retrieval because document
-structure can provide useful context for chunk construction and source
-attribution.
-
-Docling creates a structured representation of the source document
-before chunking.
-
-### Why HybridChunker?
-
-I used Docling's `HybridChunker` rather than a fixed character splitter.
-It combines document-aware hierarchical chunking with tokenizer-aware
-size constraints.
-
-This preserves meaningful document boundaries where possible while
-preventing chunks from becoming too large for downstream embedding and
-generation.
-
-The resulting Docling chunk objects are converted to their text
-representation before embedding:
-
-``` python
-chunk_texts = []
-
-for chunk in chunkings:
-    chunk_texts.append(chunk.text)
-```
-
-The entire document is **not** represented by one embedding. Each chunk
-receives its own embedding so a query can retrieve the specific portions
-of the document that are most relevant.
+Docling preserves structural information from technical PDFs rather than immediately flattening the document to plain text. `HybridChunker` combines document-aware hierarchical chunking with tokenizer-aware size constraints, preserving meaningful boundaries while keeping chunks appropriately sized for retrieval and generation.
 
 ## 2. Embeddings
 
-Document chunks are embedded with:
+Document chunks are embedded with `Qwen/Qwen3-Embedding-0.6B`, producing 1024-dimensional vectors.
 
-``` text
-Qwen/Qwen3-Embedding-0.6B
-```
+The 0.6B model was selected as a quality-versus-resource tradeoff for the relatively small assessment corpus. It can run locally while supporting instruction-aware retrieval.
 
-The model produces 1024-dimensional dense vectors in this
-implementation.
+Queries use Qwen's retrieval-specific query encoding:
 
-### Model selection
-
-Considering retrieval quality together with model size, memory
-requirements, embedding dimensionality, deployment complexity, and the
-relatively small size of the assessment corpus.
-
-Selecting 0.6B Qwen3 embedding model was as a quality-versus-resource
-tradeoff rather than selecting the largest available model. It is small
-enough to run locally for the prototype while supporting
-instruction-aware retrieval.
-
-Document chunks are embedded normally. Queries use Qwen's
-retrieval-specific query prompt:
-
-``` python
+```python
 self.model.encode(
     [query_text],
     prompt_name="query"
 )
 ```
 
-This explicitly tells the embedding model that the input represents a
-retrieval query.
+Instruction-aware query encoding was retained after evaluation showed improvements in Recall@5 and nDCG.
 
 ## 3. Elasticsearch Index
 
-Each document chunk is stored in Elasticsearch with three core fields:
+Elasticsearch stores each chunk's text, chunk ID, and 1024-dimensional dense embedding.
 
-``` json
-{
-  "chunk_id": 0,
-  "text": "...",
-  "embedding": [0.01, -0.03, "..."]
-}
-```
+The text field supports **BM25 lexical retrieval**, while the indexed dense-vector field supports **approximate nearest-neighbor retrieval using cosine similarity**.
 
-The dense vector mapping is configured with:
-
-``` text
-dimensions: 1024
-similarity: cosine
-index: true
-```
-
-The text field supports BM25 lexical search, while the dense vector
-field supports semantic retrieval.
-
-Document ingestion is intentionally separate from question answering.
-Parsing and embedding the source document are relatively expensive
-operations and do not need to be repeated for every query.
+Document ingestion is separated from question answering so parsing and document embedding do not need to be repeated for every query.
 
 ## 4. Hybrid Retrieval
 
-A user query is searched through two retrieval paths.
+Each query follows two retrieval paths:
 
-### BM25 lexical retrieval
+* **BM25** captures exact terminology, acronyms, and distinctive technical phrases.
+* **Dense retrieval** uses the Qwen query embedding with Elasticsearch kNN search to capture semantic similarity.
 
-The raw query text is passed directly to Elasticsearch's text search.
+The rankings are combined using **Reciprocal Rank Fusion (RRF)**:
 
-BM25 is useful when exact terminology, acronyms, or distinctive
-technical phrases are important.
-
-### Dense semantic retrieval
-
-The query is embedded with Qwen and passed to Elasticsearch kNN search.
-
-Elasticsearch uses an approximate nearest-neighbor vector index to
-efficiently locate vectors that are close to the query according to the
-configured cosine similarity measure.
-
-Conceptually:
-
-``` text
-HNSW / ANN = how candidate vectors are searched efficiently
-Cosine     = how vector closeness is measured
-```
-
-### Reciprocal Rank Fusion
-
-The BM25 and dense rankings are combined with Reciprocal Rank Fusion:
-
-``` text
+```text
 RRF score = Σ 1 / (60 + rank)
 ```
 
-RRF operates on ranking positions rather than attempting to directly
-compare BM25 scores with vector similarity scores.
-
-This is useful because the raw scores produced by lexical and dense
-retrieval are not naturally on the same scale.
+RRF combines ranking positions rather than directly comparing BM25 and vector similarity scores, which are not naturally on the same scale.
 
 ## 5. CrossEncoder Reranking
 
-Hybrid retrieval returns seven candidates.
+The top seven hybrid-retrieval candidates are reranked with `cross-encoder/ms-marco-MiniLM-L6-v2`.
 
-These candidates are reranked with:
+Unlike the embedding retriever, the CrossEncoder evaluates each query/chunk pair jointly. The top three reranked chunks are then supplied to the generation model.
 
-``` text
-cross-encoder/ms-marco-MiniLM-L6-v2
-```
 
-Unlike the embedding stage, which encodes the query and document
-independently, the CrossEncoder evaluates each query/chunk pair
-together.
-
-``` text
+```text
 BM25 + Dense
       ↓
      RRF
@@ -425,63 +325,9 @@ CrossEncoder
 Top 3 chunks
 ```
 
-Only the final top three chunks are supplied to the generation model. 
+This provides a broader candidate set during retrieval while limiting the more expensive CrossEncoder and generation stages to a small set of high-quality evidence.
 
-This keeps the more computationally expensive CrossEncoder focused on a
-small candidate set while improving the ordering of evidence supplied to
-the LLM.
-
-## 6. Grounded Question Answering
-
-The final three chunks are passed to Gemini as retrieved evidence.
-
-The generation prompt instructs the model to:
-
--   answer using only the supplied document context
--   avoid unsupported inference
--   state when the available context is insufficient
--   cite only chunks that directly support the answer
--   synthesize the evidence rather than simply reproducing retrieved
-    text
-
-The LLM provider is isolated behind its own component so generation can
-be changed without redesigning retrieval.
-
-The implementation also records which Gemini model successfully
-generated the response when model fallback is used.
-
-## 7. Structured Output
-
-Responses are validated with Pydantic.
-
-The output schema is conceptually:
-
-``` json
-{
-  "question": "What are the main barriers to climate change adaptation?",
-  "answer": "The document identifies ...",
-  "sources": [
-    {
-      "chunk_id": 42
-    },
-    {
-      "chunk_id": 47
-    }
-  ]
-}
-```
-
-Each source corresponds to a retrieved chunk that the generation model
-determined directly supports the answer.
-
-Importantly, **retrieved chunks and cited chunks are not treated as the
-same thing**. Retrieval always returns the nearest available candidates,
-but the generation layer is instructed not to cite a chunk unless it
-actually supports the response.
-
-This distinction is important for unsupported questions.
-
-## 8. Evaluation
+## 6. Evaluation
 
 I evaluated retrieval and generation separately so failures can be
 attributed to the appropriate stage of the RAG pipeline.
@@ -595,44 +441,7 @@ chunks when they did not support an answer.
 For the false-premise test, the model rejected the unsupported premise
 and described what the retrieved document actually supported.
 
-
-## 9. Query-Time Pipeline
-
-After ingestion, each question follows:
-
-``` text
-Question
- ↓
-Instruction-aware Qwen query embedding
- ↓
-BM25 + dense kNN retrieval
- ↓
-RRF
- ↓
-7 candidates
- ↓
-CrossEncoder
- ↓
-3 evidence chunks
- ↓
-Gemini
- ↓
-Structured response
-```
-
-The `RAGPipeline` coordinates these reusable components:
-
-``` python
-response, model_used, final_results = pipeline.answer_question(
-    query_text
-)
-```
-
-`response` contains the validated answer and citations, `model_used`
-records the Gemini model used for generation, and `final_results`
-contains the exact chunks supplied to the LLM.
-
-## 10. Evaluation Environments
+## 7. Evaluation Environments
 
 The main application and retrieval evaluation use the primary
 environment:
@@ -679,7 +488,7 @@ Evaluation is kept separate from normal application startup. The
 assistant does not rerun the 25-case generation benchmark every time the
 application starts.
 
-## 11. Main Dependencies
+## 8. Main Dependencies
 
 The primary implementation uses:
 
@@ -696,7 +505,7 @@ python-dotenv              environment configuration
 DeepEval is installed separately for generation evaluation.
 
 
-## Example Query
+## 9. Example Query
 
 ## 1. Multi-Chunk Synthesis
 
