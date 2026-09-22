@@ -692,28 +692,63 @@ DeepEval is installed separately for generation evaluation.
 
 ## Example Query
 
-``` text
-What are the main barriers to climate change adaptation?
-```
+## 1. Multi-Chunk Synthesis
 
-The system embeds the question, retrieves lexical and semantic
-candidates, fuses and reranks them, sends the final evidence to Gemini,
-and returns a structured response similar to:
+**Query**
 
-``` json
-{
-  "question": "What are the main barriers to climate change adaptation?",
-  "answer": "The retrieved document context identifies several barriers ...",
-  "sources": [
-    {
-      "chunk_id": 123
-    }
-  ]
-}
-```
+> How does the IPCC assess the relationship between human-caused warming, observed changes in climate extremes, and the risks expected to increase with additional global warming?
 
-The example above illustrates the response schema; exact answer text and
-source IDs depend on the indexed source document and retrieval results.
+**Answer**
+
+> Based on the provided context, the IPCC assesses these relationships as follows:
+>
+> - **Human influence and physical climate changes:** Observed impacts are driven by and connected to changes in multiple physical climate conditions (climatic impact-drivers), which are increasingly attributed to human influence.
+> - **Escalation of risks with additional warming:** Climate-related risks, projected adverse impacts, and related losses and damages escalate with every increment of global warming (very high confidence). Risks are assessed to be higher at 1.5°C than at present, and even higher at 2°C (high confidence), with long-term impacts projected to be up to multiple times higher than currently observed (high confidence).
+> - **Compounding risks:** Climatic and non-climatic risks will increasingly interact, creating compound and cascading risks that are more complex and difficult to manage (high confidence).
+>
+> *Note: The provided context refers to "physical climate conditions" and "climatic impact-drivers" attributed to human influence, but does not provide specific text explicitly detailing "climate extremes."*
+
+**Sources:** Chunks `38`, `73`, `75`
+
+**Model:** `gemini-3.8-flash`
+
+This example demonstrates retrieval and synthesis across multiple chunks while acknowledging when part of the question is not directly supported by the retrieved evidence.
+
+---
+
+### 2. Factual Retrieval
+
+**Query**
+
+> How much higher was global surface temperature in 2011–2020 compared with 1850–1900?
+
+**Answer**
+
+> Global surface temperature was 1.09 [0.95 to 1.20] °C higher in 2011–2020 than in 1850–1900 (reaching approximately 1.1 °C above 1850–1900 levels), with larger increases observed over land (1.59 [1.34 to 1.83] °C) than over the ocean (0.88 [0.68 to 1.01] °C).
+
+**Sources:** Chunks `21`, `22`
+
+**Model:** `gemini-3.8-flash`
+
+This example demonstrates retrieval of specific quantitative information and attribution to the supporting document chunks.
+
+---
+
+### 3. Unsupported Query / Groundedness
+
+**Query**
+
+> What was the weather in 2018?
+
+**Answer**
+
+> The available context is insufficient to answer what the weather was in 2018. The documents only mention that global mean sea level increased between 1901 and 2018 and note the rate of sea level rise between 2006 and 2018, but do not provide specific weather conditions for that year.
+
+**Sources:** None
+
+**Model:** `gemini-3.8-flash`
+
+This example demonstrates grounded behavior for an unsupported question. Although retrieval can still return semantically related chunks, the generation layer does not treat those chunks as sufficient evidence and returns no source citations.
 
 
 
