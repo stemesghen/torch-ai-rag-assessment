@@ -4,10 +4,6 @@ A prototype retrieval-augmented generation (RAG) assistant for
 processing technical PDF documents, retrieving relevant evidence, and
 generating grounded, structured answers.
 
-The system was designed for the AI/ML engineering programming exercise
-with an emphasis on **retrieval design, grounding, evaluation, and
-explainable system architecture** rather than production completeness.
-
 ## Overview
 
 The assistant separates document ingestion from question answering:
@@ -652,6 +648,12 @@ environment:
 └── negative evaluation
 ```
 
+# Retrieval evaluation
+python -m evaluation.retrieval_eval
+
+# Negative tests
+python -m evaluation.negative_eval
+
 DeepEval generation evaluation is isolated in a second environment
 because its dependency requirements conflicted with the main prototype
 environment:
@@ -668,6 +670,10 @@ python -m venv .venv-eval
 source .venv-eval/bin/activate
 pip install -r requirements-deepeval.txt
 ```
+
+# Generation evaluation
+source .venv-eval/bin/activate
+python -m evaluation.DeepEval_LLM
 
 Evaluation is kept separate from normal application startup. The
 assistant does not rerun the 25-case generation benchmark every time the
