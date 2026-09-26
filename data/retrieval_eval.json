@@ -1,3 +1,18 @@
+"""
+Used graded relevance score -because of nDCG
+ some of the chunks do also provide supporting context
+ Can evaluated ranking quality instead of treating each chunk as equally relevant
+
+
+
+
+I used an LLM OpenAI to generate a set of questions from the chunks and then provide chunk matches - I did cross reference
+to confirm relevance and if the question is supported
+
+
+Evaluation data set is NESTED structured data - used JSON
+"""
+
 {
   "dataset_name": "ipcc_ar6_spm_rag_eval_v1",
   "source_document": "final_data.pdf",

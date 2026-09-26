@@ -31,7 +31,76 @@ response, model_used, final_results = pipeline.answer_question(
 print(f"\nAnswer:\n{response.answer}")
 
 print("\nSources:")
+
 for source in response.sources:
-    print(f"- Chunk {source.chunk_id}")
+
+    # Match the cited chunk ID to its retrieved chunk metadata.
+    result = next(
+        (
+            result
+            for result in final_results
+            if result["chunk_id"] == source.chunk_id
+        ),
+        None
+    )
+
+    if result:
+
+        metadata = result.get(
+            "metadata",
+            {}
+        )
+
+        # Get the original document filename.
+        filename = metadata.get(
+            "origin",
+            {}
+        ).get(
+            "filename",
+            "Unknown source"
+        )
+
+        # Get the section heading when available.
+        headings = metadata.get(
+            "headings",
+            []
+        )
+
+        section = (
+            headings[0]
+            if headings
+            else "Unknown section"
+        )
+
+        # Get the source page from Docling provenance.
+        page_number = None
+
+        for item in metadata.get(
+            "doc_items",
+            []
+        ):
+            provenance = item.get(
+                "prov",
+                []
+            )
+
+            if provenance:
+                page_number = provenance[0].get(
+                    "page_no"
+                )
+                break
+
+        print(
+            f"- {filename} | "
+            f"Page {page_number} | "
+            f"{section} | "
+            f"Chunk {source.chunk_id}"
+        )
+
+    else:
+
+        print(
+            f"- Chunk {source.chunk_id}"
+        )
 
 print(f"\nModel used: {model_used}")

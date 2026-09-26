@@ -5,8 +5,8 @@ from elasticsearch import Elasticsearch
 """
 Elasticsearch retrieval layer for the RAG pipeline.
 
-Stores document chunks and their dense embeddings in Elasticsearch and
-supports:
+Stores document chunks, their metadata, and dense embeddings in Elasticsearch
+and supports:
 
 - BM25 sparse retrieval over chunk text.
 - kNN dense retrieval over Qwen embeddings using cosine similarity.
@@ -14,7 +14,7 @@ supports:
   sparse and dense rankings.
 
 The Elasticsearch index stores the chunk ID, original chunk text,
-and 1024-dimensional embedding vector.
+Docling metadata, and 1024-dimensional embedding vector.
 """
 
 
@@ -49,6 +49,13 @@ class ElasticsearchRetriever:
                         "type": "text"
                     },
 
+                    # Preserve Docling metadata associated with each
+                    # document chunk for provenance and citations.
+                    "metadata": {
+                        "type": "object",
+                        "enabled": True
+                    },
+
                     # Dense vectors support semantic retrieval using
                     # the 1024-dimensional Qwen embedding representation.
                     "embedding": {
@@ -62,19 +69,21 @@ class ElasticsearchRetriever:
         )
 
 
-    def index_chunks(self, chunk_texts, embedded_data):
+    def index_chunks(self, chunks, embedded_data):
         """
-        Store document chunks and their dense embeddings in Elasticsearch.
+        Store document chunks, metadata, and dense embeddings in Elasticsearch.
 
-        Each chunk is assigned a chunk ID so results from sparse and
-        dense retrieval can be matched during hybrid retrieval.
+        Each chunk retains its chunk ID and Docling metadata so results from
+        sparse and dense retrieval can be matched and traced back to their
+        original document context.
         """
 
-        for i in range(len(chunk_texts)):
+        for i in range(len(chunks)):
 
             document = {
-                "chunk_id": i,
-                "text": chunk_texts[i],
+                "chunk_id": chunks[i]["chunk_id"],
+                "text": chunks[i]["text"],
+                "metadata": chunks[i]["metadata"],
 
                 # Elasticsearch expects the embedding as a Python list
                 # rather than the NumPy array returned by the embedder.
@@ -83,11 +92,11 @@ class ElasticsearchRetriever:
 
             self.client.index(
                 index=self.index_name,
-                id=i,
+                id=chunks[i]["chunk_id"],
                 document=document
             )
 
-        return len(chunk_texts)
+        return len(chunks)
 
 
     def knn_search(self, embedded_query, k=3):
@@ -169,7 +178,7 @@ class ElasticsearchRetriever:
         # appear in both dense and sparse retrieval results.
         rrf_scores = {}
 
-        # Store the chunk text separately so it can be included in the
+        # Store the chunk data separately so it can be included in the
         # final ranked output after the RRF scores are combined.
         chunks = {}
 
@@ -181,7 +190,10 @@ class ElasticsearchRetriever:
         ):
             chunk_id = result["_source"]["chunk_id"]
 
-            chunks[chunk_id] = result["_source"]["text"]
+            chunks[chunk_id] = {
+                "text": result["_source"]["text"],
+                "metadata": result["_source"].get("metadata", {})
+            }
 
             # Standard RRF uses rank rather than the original retrieval
             # score, allowing results from different retrieval methods
@@ -200,7 +212,10 @@ class ElasticsearchRetriever:
         ):
             chunk_id = result["_source"]["chunk_id"]
 
-            chunks[chunk_id] = result["_source"]["text"]
+            chunks[chunk_id] = {
+                "text": result["_source"]["text"],
+                "metadata": result["_source"].get("metadata", {})
+            }
 
             rrf = 1 / (60 + rank)
 
@@ -227,11 +242,10 @@ class ElasticsearchRetriever:
             final_results.append({
                 "chunk_id": chunk_id,
                 "rrf_score": score,
-                "text": chunks[chunk_id]
+                "text": chunks[chunk_id]["text"],
+                "metadata": chunks[chunk_id]["metadata"]
             })
 
 
         # Return only the highest-ranked fused candidates.
         return final_results[:k]
-
-

@@ -1,4 +1,3 @@
-
 import json
 from pathlib import Path
 from docling.document_converter import DocumentConverter
@@ -17,15 +16,6 @@ project_path = Path(__file__).resolve().parent.parent
 file_path = project_path / "data" / "final_data.pdf"
 
 
-import json
-from docling.document_converter import DocumentConverter
-from docling.chunking import HybridChunker
-import json
-
-from docling.document_converter import DocumentConverter
-from docling.chunking import HybridChunker
-
-
 def process_document(file_path, cache_path=None):
 
     # Use cached chunks if they already exist.
@@ -34,14 +24,9 @@ def process_document(file_path, cache_path=None):
         with open(cache_path, "r", encoding="utf-8") as file:
             chunks = json.load(file)
 
-        chunk_texts = [
-            chunk["text"]
-            for chunk in chunks
-        ]
+        print(f"Loaded {len(chunks)} cached chunks")
 
-        print(f"Loaded {len(chunk_texts)} cached chunks")
-
-        return chunk_texts
+        return chunks
 
     # No cache exists — process the original document.
     converter = DocumentConverter()
@@ -60,30 +45,34 @@ def process_document(file_path, cache_path=None):
 
     print("Number of chunks:", len(chunkings))
 
-    chunk_texts = [
-        chunk.text
-        for chunk in chunkings
-    ]
+    # Preserve the chunk text and Docling metadata so metadata can
+    # also be stored in Elasticsearch during document ingestion.
+    chunks = []
 
-    # Cache chunks for future runs.
+    for i, chunk in enumerate(chunkings):
+
+        metadata = {}
+
+        if chunk.meta:
+            metadata = chunk.meta.export_json_dict()
+
+        chunks.append({
+            "chunk_id": i,
+            "text": chunk.text,
+            "metadata": metadata
+        })
+
+    # Cache chunks and their metadata for future runs.
     if cache_path:
-
-        cached_chunks = [
-            {
-                "chunk_id": i,
-                "text": text
-            }
-            for i, text in enumerate(chunk_texts)
-        ]
 
         with open(cache_path, "w", encoding="utf-8") as file:
             json.dump(
-                cached_chunks,
+                chunks,
                 file,
                 indent=2,
                 ensure_ascii=False
             )
 
-        print(f"Cached {len(chunk_texts)} chunks")
+        print(f"Cached {len(chunks)} chunks")
 
-    return chunk_texts
+    return chunks

@@ -507,7 +507,7 @@ DeepEval is installed separately for generation evaluation.
 
 ## 9. Example Query
 
-## 1. Multi-Chunk Synthesis
+### 1. Multi-Chunk Synthesis
 
 **Query**
 
@@ -517,17 +517,21 @@ DeepEval is installed separately for generation evaluation.
 
 > Based on the provided context, the IPCC assesses these relationships as follows:
 >
-> - **Human influence and physical climate changes:** Observed impacts are driven by and connected to changes in multiple physical climate conditions (climatic impact-drivers), which are increasingly attributed to human influence.
-> - **Escalation of risks with additional warming:** Climate-related risks, projected adverse impacts, and related losses and damages escalate with every increment of global warming (very high confidence). Risks are assessed to be higher at 1.5°C than at present, and even higher at 2°C (high confidence), with long-term impacts projected to be up to multiple times higher than currently observed (high confidence).
-> - **Compounding risks:** Climatic and non-climatic risks will increasingly interact, creating compound and cascading risks that are more complex and difficult to manage (high confidence).
+> - **Human-caused changes:** Observed impacts are driven by and connected to physical climate conditions (climatic impact-drivers), many of which are increasingly attributed to human influence.
+> - **Escalation of risks with warming:** Risks, projected adverse impacts, and related losses and damages escalate with every increment of global warming (very high confidence). They are higher at 1.5°C than at present and even higher at 2°C (high confidence).
+> - **Long-term and compound risks:** Projected long-term impacts are up to multiple times higher than currently observed (high confidence). Additionally, climatic and non-climatic risks will increasingly interact, creating compound and cascading risks that are more complex and difficult to manage (high confidence).
+> - **Lower threshold for high risk:** Compared to AR5, global aggregated risk levels are assessed to reach high to very high levels at lower warming levels due to recent evidence of observed impacts, improved process understanding, and new insights into exposure, vulnerability, and adaptation limits (high confidence).
 >
-> *Note: The provided context refers to "physical climate conditions" and "climatic impact-drivers" attributed to human influence, but does not provide specific text explicitly detailing "climate extremes."*
+> *(Note: The provided text refers to physical climate changes/conditions and climatic impact-drivers rather than detailing specific "climate extremes" by name.)*
 
-**Sources:** Chunks `38`, `73`, `75`
+**Sources:**
+- `final_data.pdf | Page 13 | Adverse impacts from human-caused climate change will continue to intensify | Chunk 38`
+- `final_data.pdf | Page 20 | Climate Change Impacts and Climate-Related Risks | Chunk 73`
+- `final_data.pdf | Page 21 | Climate Change Impacts and Climate-Related Risks | Chunk 75`
 
 **Model:** `gemini-3.8-flash`
 
-This example demonstrates retrieval and synthesis across multiple chunks while acknowledging when part of the question is not directly supported by the retrieved evidence.
+This example demonstrates retrieval and synthesis across multiple chunks while preserving source-document, page, section, and chunk-level provenance from the document metadata.
 
 ---
 
@@ -539,13 +543,15 @@ This example demonstrates retrieval and synthesis across multiple chunks while a
 
 **Answer**
 
-> Global surface temperature was 1.09 [0.95 to 1.20] °C higher in 2011–2020 than in 1850–1900 (reaching approximately 1.1 °C above 1850–1900 levels), with larger increases observed over land (1.59 [1.34 to 1.83] °C) than over the ocean (0.88 [0.68 to 1.01] °C).
+> Global surface temperature was 1.09 [0.95 to 1.20]°C higher (also cited as reaching 1.1°C above) in 2011–2020 compared with 1850–1900, with larger increases over land (1.59 [1.34 to 1.83]°C) than over the ocean (0.88 [0.68 to 1.01]°C).
 
-**Sources:** Chunks `21`, `22`
+**Sources:**
+- `final_data.pdf | Page 10 | Observed Warming and its Causes | Chunk 21`
+- `final_data.pdf | Page 10 | Observed Warming and its Causes | Chunk 22`
 
 **Model:** `gemini-3.8-flash`
 
-This example demonstrates retrieval of specific quantitative information and attribution to the supporting document chunks.
+This example demonstrates retrieval of specific quantitative information with source-document, page, section, and chunk-level attribution.
 
 ---
 
@@ -557,13 +563,10 @@ This example demonstrates retrieval of specific quantitative information and att
 
 **Answer**
 
-> The available context is insufficient to answer what the weather was in 2018. The documents only mention that global mean sea level increased between 1901 and 2018 and note the rate of sea level rise between 2006 and 2018, but do not provide specific weather conditions for that year.
+> The available context does not contain enough information to determine what the weather was in 2018.
 
 **Sources:** None
 
 **Model:** `gemini-3.8-flash`
 
 This example demonstrates grounded behavior for an unsupported question. Although retrieval can still return semantically related chunks, the generation layer does not treat those chunks as sufficient evidence and returns no source citations.
-
-
-
